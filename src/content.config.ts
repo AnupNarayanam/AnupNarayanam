@@ -1,4 +1,4 @@
-import { defineCollection, reference } from 'astro:content';
+import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
@@ -38,26 +38,4 @@ const blog = defineCollection({
   }),
 });
 
-// Lab catalogue. The lab code itself lives in a separate repository (see anup-labs).
-const labs = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/labs' }),
-  schema: z.object({
-    title: z.string(),
-    summary: z.string(),
-    difficulty: z.enum(['easy', 'medium', 'hard', 'insane']),
-    category: z.string(),
-    skills: z.array(z.string()).default([]),
-    estimatedMinutes: z.number(),
-    status: z.enum(['draft', 'beta', 'released']).default('draft'),
-    runtime: z.enum(['local', 'hosted', 'both']).default('local'),
-    repo: z.url().optional(),
-    path: z.string().optional(),
-    version: z.string().default('0.1.0'),
-    objectives: z.array(z.string()).default([]),
-    hints: z.array(z.string()).default([]),
-    flagFormat: z.string().default('flag{...}'),
-    writeup: reference('writeups').optional(),
-  }),
-});
-
-export const collections = { writeups, blog, labs };
+export const collections = { writeups, blog };

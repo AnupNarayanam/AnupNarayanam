@@ -2,7 +2,7 @@
 import { $, el } from './utils.js';
 import { SITE } from '../data/profile.ts';
 
-const PAGES = [['Home', '/'], ['Projects', '/projects/'], ['Writeups', '/writeups/'], ['Blog', '/blog/'], ['Labs', '/labs/'], ['About', '/about/'], ['Contact', '/contact/'], ['Search page', '/search/']];
+const PAGES = [['Home', '/'], ['Projects', '/projects/'], ['Writeups', '/writeups/'], ['Blog', '/blog/'], ['About', '/about/'], ['Contact', '/contact/'], ['Search page', '/search/']];
 const go = (href) => () => { location.href = href; };
 const BASE_ITEMS = [
   ...PAGES.map(([label, href]) => ({ label, hint: 'Page', run: go(href) })),
@@ -101,7 +101,7 @@ function hide() {
 export function initPalette() {
   overlay = el('div', 'pal');
   overlay.hidden = true;
-  overlay.innerHTML = '<div class="pal-p" role="dialog" aria-modal="true" aria-label="Command palette"><input id="pal-q" type="text" role="combobox" aria-expanded="true" aria-controls="pal-l" autocomplete="off" spellcheck="false" placeholder="Jump to a page, or search writeups, posts and labs"><ul id="pal-l" role="listbox" aria-label="Results"></ul><div class="pal-h">Up and down to move, Enter to open, Esc to close</div></div>';
+  overlay.innerHTML = '<div class="pal-p" role="dialog" aria-modal="true" aria-label="Command palette"><input id="pal-q" type="text" role="combobox" aria-expanded="true" aria-controls="pal-l" autocomplete="off" spellcheck="false" placeholder="Jump to a page, or search writeups and posts"><ul id="pal-l" role="listbox" aria-label="Results"></ul><div class="pal-h">Up and down to move, Enter to open, Esc to close</div></div>';
   document.body.append(overlay);
   input = $('#pal-q');
   list = $('#pal-l');

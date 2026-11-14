@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import { getCollection } from 'astro:content';
 import { STATS, PROJECTS, SITE } from '../data/profile.ts';
-import { published, labPublished, byDateDesc, fmt } from '../lib/content.ts';
+import { published, byDateDesc, fmt } from '../lib/content.ts';
 
 const writeups = await getCollection('writeups');
 const collections = writeups
@@ -13,7 +13,6 @@ const collections = writeups
   .sort((a, b) => b.n - a.n)
   .slice(0, 4);
 const posts = (await getCollection('blog', published)).sort(byDateDesc).slice(0, 3);
-const labs = (await getCollection('labs', labPublished)).slice(0, 3);
 const featured = PROJECTS.filter((p) => p.featured);
 
 let n = 0;
@@ -102,14 +101,6 @@ building ASTRA, RAVEN and R3PORT<span class="caret"></span></pre>
     </section>
   )}
 
-  {labs.length > 0 && (
-    <section class="wrap sec">
-      <div class="sh"><span class="ix">{ix()}</span><h2>Labs</h2><a class="more" href="/labs/">All labs</a></div>
-      <div class="list">
-        {labs.map((l) => <a class="card" href={`/labs/${l.id}/`} data-reveal><span class="cat">{l.data.difficulty}</span><h3>{l.data.title}</h3><p class="snip">{l.data.summary}</p><div class="meta">About {l.data.estimatedMinutes} min</div></a>)}
-      </div>
-    </section>
-  )}
 
   <section class="wrap sec">
     <div class="band" data-reveal>

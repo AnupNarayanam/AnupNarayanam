@@ -272,7 +272,7 @@ body.running #tr{opacity:.22}
 
 
 [hidden]{display:none!important}
-/* blog, labs, search */
+/* blog, search */
 .tagrow{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
 .tag{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:3px 12px;font:500 12.5px "JetBrains Mono",monospace;color:var(--mute);text-decoration:none;background:var(--surface)}
 a.tag:hover{border-color:var(--ink);color:var(--ink)}
@@ -286,10 +286,6 @@ a.tag:hover{border-color:var(--ink);color:var(--ink)}
 .sources h2{font:600 20px "Inter",sans-serif;margin:0 0 8px}
 .sources ol{padding-left:22px;margin:0}
 .sources a{overflow-wrap:anywhere}
-.diff{letter-spacing:3px;font-size:11px}
-details.hint{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:10px 16px;margin:0 0 10px;max-width:76ch}
-details.hint summary{cursor:pointer;font-weight:600}
-details.hint p{margin:10px 0 0;color:var(--mute)}
 .srch{display:grid;gap:12px;margin-top:20px}
 .srch input{width:100%;max-width:520px;height:46px;border-radius:12px;border:1px solid var(--line);background:var(--surface);padding:0 16px}
 .srch input:focus{outline:none;border-color:var(--ink)}

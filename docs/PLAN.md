@@ -1,5 +1,7 @@
 # Plan: Anup's main website (portfolio, writeups, blog, labs)
 
+> **Update, November 2026:** the labs section was dropped. Decision D5, Phase 5 and the hosted-labs design no longer apply, and the labs files were removed from the repository. The rest of the plan stands.
+
 ## Primary goal
 
 A visitor lands on Anup's domain and meets the portfolio first, then can move on to his CTF writeups, his plain-language write-ups of recent cyberattacks, and hands-on labs he built himself, all on one fast, searchable site that Anup extends by adding a Markdown file or a Notion page.
