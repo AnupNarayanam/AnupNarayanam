@@ -1,0 +1,72 @@
+---
+import Base from '../layouts/Base.astro';
+import { SKILLS, TIMELINE, SITE } from '../data/profile.ts';
+---
+<Base title="About" page="about" description="Education, experience at team bi0s, skills and timeline of Anup Narayanam, web developer and security researcher." greet="Fun fact: he plays chess. Ask him for a game." tips={['Scroll to the timeline.', 'bi0s is the team behind inCTF.']}>
+  <div class="wrap pgh"><span class="ix">A</span><h1>About me</h1><p>Web developer, UI designer and aspiring AI cybersecurity engineer.</p></div>
+
+  <section class="wrap sec">
+    <div class="split">
+      <div class="box" data-reveal>
+        <h3>Who I am</h3>
+        <p>B.Tech CSE student at Amrita Vishwa Vidyapeetham (Amritapuri) and Core Member of team bi0s. I work across web development, UI design and security research, from building React and Node.js applications to penetration testing and vulnerability assessment.</p>
+        <h3 class="mt">What I do</h3>
+        <p>I build full-stack web applications with React, Node.js and Flask, conduct penetration testing and vulnerability research across web applications and APIs, and develop agentic AI systems that combine LLM orchestration with real backend engineering.</p>
+        <div class="cta mt"><a class="btn solid" href={SITE.resume} download>Download CV</a><a class="btn" href="/contact/">Contact me</a></div>
+      </div>
+      <div class="box" data-reveal>
+        <h3>Focus areas</h3>
+        <ul class="bul"><li>Web development and UI design</li><li>Penetration testing and vulnerability assessment</li><li>Agentic AI and LLM-orchestrated systems</li></ul>
+        <h3 class="mt">Outside of code</h3>
+        <p>I game, produce music, and play badminton, football and chess.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap sec">
+    <div class="sh"><span class="ix">01</span><h2>Education and experience</h2></div>
+    <div class="two">
+      <div class="box" data-reveal>
+        <span class="cat">Education</span>
+        <h3 class="mt">Bachelor of Technology, Computer Science and Engineering</h3>
+        <p class="mono">Aug 2024 to Aug 2028</p>
+        <p>Amrita Vishwa Vidyapeetham, Amritapuri. Currently maintaining a GPA of 7.45 / 10.00.</p>
+        <h3 class="mt">Certifications</h3>
+        <ul class="bul"><li>Introduction to Cyber Security, Infosys Springboard</li><li>SQL Fundamentals, Oracle</li></ul>
+      </div>
+      <div class="box" data-reveal>
+        <span class="cat">Club experience</span>
+        <h3 class="mt">Security Researcher, Core Member, team bi0s</h3>
+        <p class="mono">Nov 2024 to present, Amritapuri, India</p>
+        <ul class="bul">
+          <li>Perform penetration testing on web applications, APIs and cloud environments, identifying authentication, authorization, injection, business logic and access control vulnerabilities.</li>
+          <li>Conduct vulnerability research, attack surface mapping and proof-of-concept development through bug bounty programs and real-world assessments, including 3+ web application security reviews.</li>
+          <li>Work through advanced PortSwigger Web Security Academy labs and Hack The Box machines: completed 2+ Hack The Box seasons and 20+ vulnerable machines and CTF challenges.</li>
+          <li>Mentor junior members through structured onboarding, weekly technical sessions and hands-on guidance on offensive tooling and documentation.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap sec">
+    <div class="sh"><span class="ix">02</span><h2>Skills</h2></div>
+    <div class="skills">
+      {SKILLS.map(([title, list]) => <div class="box" data-reveal><h3>{title}</h3><div class="pills">{list.map((s) => <span class="pill">{s}</span>)}</div></div>)}
+    </div>
+  </section>
+
+  <section class="wrap sec">
+    <div class="sh"><span class="ix">03</span><h2>Timeline</h2></div>
+    <ol class="tl">
+      {TIMELINE.map(([when, title, text]) => <li data-reveal><time>{when}</time><h3>{title}</h3><p>{text}</p></li>)}
+    </ol>
+  </section>
+
+  <section class="wrap sec">
+    <div class="band" data-reveal>
+      <h2>Let&rsquo;s build something secure.</h2>
+      <p>Have a project, a team, or a CTF to play? I reply within a day.</p>
+      <div class="cta"><a class="btn solid" href="/contact/">Get in touch</a><a class="btn" href={`mailto:${SITE.email}`}>Email me</a></div>
+    </div>
+  </section>
+</Base>

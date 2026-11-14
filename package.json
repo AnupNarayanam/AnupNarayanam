@@ -1,0 +1,28 @@
+{
+  "name": "anup-site",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=22.22.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && pagefind --site dist",
+    "preview": "astro preview",
+    "check": "astro check",
+    "sync": "node scripts/sync-notion.mjs",
+    "import-legacy": "node scripts/import-legacy.mjs",
+    "check:csp": "node scripts/check-csp.mjs"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.4.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "pagefind": "^1.6.0",
+    "typescript": "^6.0.3"
+  }
+}

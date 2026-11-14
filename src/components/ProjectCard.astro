@@ -1,0 +1,15 @@
+---
+import { KINDS, type Project } from '../data/profile.ts';
+interface Props { p: Project; short?: boolean }
+const { p, short = false } = Astro.props;
+const label = Object.fromEntries(KINDS)[p.kind];
+const desc = short ? p.desc.split('. ')[0] + '.' : p.desc;
+---
+<article class="card pcard" data-kind={p.kind} data-item data-reveal>
+  <div class="row"><span class="cat">{label}</span><span class="status"><i class={p.status === 'Ongoing' ? 'dot' : 'dot still'}></i>{p.status}</span></div>
+  <h3>{p.name}</h3>
+  <p class="tagline">{p.tagline}</p>
+  <p>{desc}</p>
+  <div class="tags">{p.stack.map((t) => <span>{t}</span>)}</div>
+  <a class="go" href={p.github} target="_blank" rel="noopener noreferrer">View on GitHub</a>
+</article>

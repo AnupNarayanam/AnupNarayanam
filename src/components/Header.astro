@@ -1,0 +1,19 @@
+---
+const { page = '' } = Astro.props;
+const NAV = [['Projects', '/projects/', 'projects'], ['Writeups', '/writeups/', 'writeups'], ['Blog', '/blog/', 'blog'], ['Labs', '/labs/', 'labs'], ['About', '/about/', 'about'], ['Contact', '/contact/', 'contact']];
+---
+<header class="site-h" id="site-h">
+  <div class="wrap hd">
+    <a class="logo" href="/" aria-label="Anup Narayanam, home">ANUP<i>{' / '}</i>NARAYANAM</a>
+    <nav id="nav" aria-label="Main">
+      <ul>
+        {NAV.map(([label, href, key]) => <li><a href={href} aria-current={key === page ? 'page' : undefined}>{label}</a></li>)}
+      </ul>
+    </nav>
+    <div class="hd-r">
+      <button class="kbd" id="pal-open" type="button" aria-label="Open command palette"><span>Jump to</span><kbd id="kbd">Ctrl K</kbd></button>
+      <button class="tg" id="tg" type="button" aria-label="Toggle light and dark theme">&#9680;</button>
+      <button class="burger" id="bg" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav"><span></span><span></span></button>
+    </div>
+  </div>
+</header>

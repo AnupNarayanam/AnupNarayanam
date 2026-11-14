@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Search" page="search" indexable={false} description="Search every writeup, blog post, lab and page." greet="Search covers everything on the site.">
+  <div class="wrap pgh"><span class="ix">?</span><h1>Search</h1><p>Writeups, blog posts, labs and pages.</p></div>
+  <section class="wrap sec">
+    <div class="srch">
+      <input id="q" type="search" placeholder="Search the whole site" aria-label="Search the whole site" autocomplete="off" />
+      <p id="status" class="mute" role="status" aria-live="polite"></p>
+      <ul id="out" class="res"></ul>
+    </div>
+  </section>
+  <script>
+    import '../scripts/search.js';
+  </script>
+</Base>

@@ -1,0 +1,57 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { byOrder, parentId } from '../../lib/content.ts';
+
+export async function getStaticPaths() {
+  const all = await getCollection('writeups');
+  return all.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+interface Props { entry: CollectionEntry<'writeups'> }
+const { entry } = Astro.props;
+const all = await getCollection('writeups');
+const byId = new Map(all.map((e) => [e.id, e]));
+const parts = entry.id.split('/');
+const trail = parts.map((part, i) => {
+  const id = parts.slice(0, i + 1).join('/');
+  return { id, title: byId.get(id)?.data.title ?? part };
+});
+const children = all.filter((e) => parentId(e.id) === entry.id).sort(byOrder);
+const below = all.filter((e) => e.id.startsWith(entry.id + '/')).length;
+const siblings = all.filter((e) => parentId(e.id) === parentId(entry.id)).sort(byOrder);
+const at = siblings.findIndex((e) => e.id === entry.id);
+const prev = siblings[at - 1];
+const next = siblings[at + 1];
+const hasBody = Boolean(entry.body && entry.body.trim());
+const Content = hasBody ? (await render(entry)).Content : null;
+const countOf = (id: string) => all.filter((x) => x.id.startsWith(id + '/')).length;
+---
+<Base title={entry.data.title} page="writeups" ogType="article" description={`Writeup: ${entry.data.title}`} greet="Go on. Capture it." tips={['Press Ctrl K to jump to any writeup.']}>
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/writeups/">Writeups</a>
+      {trail.slice(0, -1).map((t) => <Fragment><i>/</i><a href={`/writeups/${t.id}/`}>{t.title}</a></Fragment>)}
+      <i>/</i><span>{entry.data.title}</span>
+    </nav>
+    <h1 class="pt">{entry.data.title}</h1>
+    <div class="pm">
+      {below > 0 && <span>{below} {below === 1 ? 'page' : 'pages'}</span>}
+      {entry.data.notion && <a href={entry.data.notion} target="_blank" rel="noopener noreferrer">Open in Notion</a>}
+    </div>
+    {Content && <div class="prose"><Content /></div>}
+    {!hasBody && children.length === 0 && <div class="note">This page has not been synced from Notion yet. Run <code>npm run sync</code>, or open it in Notion.</div>}
+    {children.length > 0 && (
+      <div class="list pg-list">
+        {children.map((c) => {
+          const n = countOf(c.id);
+          return <a class="card" href={`/writeups/${c.id}/`}><span class="cat">{n > 0 ? 'collection' : 'writeup'}</span><h2>{c.data.title}</h2><div class="meta">{n > 0 ? `${n} ${n === 1 ? 'page' : 'pages'}` : 'Read writeup'}</div></a>;
+        })}
+      </div>
+    )}
+    <nav class="pn2" aria-label="Neighbouring pages">
+      {prev ? <a href={`/writeups/${prev.id}/`}>Previous: {prev.data.title}</a> : <span></span>}
+      {next ? <a href={`/writeups/${next.id}/`}>Next: {next.data.title}</a> : <span></span>}
+    </nav>
+  </div>
+</Base>

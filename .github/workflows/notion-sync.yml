@@ -1,0 +1,33 @@
+name: Sync writeups from Notion
+on:
+  schedule:
+    - cron: '0 6 * * 1' # Mondays 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: node scripts/sync-notion.mjs
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          branch: chore/notion-sync
+          title: Sync writeups from Notion
+          commit-message: Sync writeups from Notion
+          body: Automated sync of the Bios Pentest Notion pages. Review the diff, then merge to publish.
+          add-paths: |
+            src/content/writeups
+            public/writeups-assets
+            src/data/synced.json

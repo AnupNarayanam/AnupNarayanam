@@ -1,0 +1,10 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Page not found" indexable={false} greet="404: flag not found." tips={['Try the Jump to button in the header.']}>
+  <div class="wrap lost">
+    <h1>404</h1>
+    <p class="mute">This page is not on the grid. Maybe the flag was never here.</p>
+    <div class="cta"><a class="btn solid" href="/">Back home</a><a class="btn" href="/writeups/">Read writeups</a></div>
+  </div>
+</Base>

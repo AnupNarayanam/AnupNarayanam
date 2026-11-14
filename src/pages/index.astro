@@ -1,0 +1,125 @@
+---
+import Base from '../layouts/Base.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { getCollection } from 'astro:content';
+import { STATS, PROJECTS, SITE } from '../data/profile.ts';
+import { published, labPublished, byDateDesc, fmt } from '../lib/content.ts';
+
+const writeups = await getCollection('writeups');
+const collections = writeups
+  .filter((e) => !e.id.includes('/'))
+  .map((e) => ({ e, n: writeups.filter((x) => x.id.startsWith(e.id + '/')).length }))
+  .filter((c) => c.n > 0)
+  .sort((a, b) => b.n - a.n)
+  .slice(0, 4);
+const posts = (await getCollection('blog', published)).sort(byDateDesc).slice(0, 3);
+const labs = (await getCollection('labs', labPublished)).slice(0, 3);
+const featured = PROJECTS.filter((p) => p.featured);
+
+let n = 0;
+const ix = () => String(++n).padStart(2, '0');
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: SITE.name,
+  jobTitle: 'Web developer and security researcher',
+  alumniOf: { '@type': 'CollegeOrUniversity', name: 'Amrita Vishwa Vidyapeetham' },
+  email: `mailto:${SITE.email}`,
+  sameAs: [SITE.github, SITE.linkedin, SITE.instagram],
+};
+---
+<Base title="Anup Narayanam" page="home" greet="Hi, I am Byte. Scroll down, or press Ctrl K to jump anywhere." tips={['Anup breaks things (legally) with team bi0s.', 'Try the Writeups page.', 'Hover the photo to see it in colour.']}>
+  <script slot="head" is:inline type="application/ld+json" set:html={JSON.stringify(ld)}></script>
+
+  <section class="wrap ph">
+    <div class="ph-l">
+      <div class="badges"><span class="badge"><i class="dot"></i>Core member, team bi0s</span><span class="badge">B.Tech CSE, Amrita Vishwa Vidyapeetham</span></div>
+      <h1>Anup Narayanam</h1>
+      <p class="role" aria-label="I build secure web apps, agentic AI systems, offensive security tooling and clean, fast interfaces">I build <b id="rot" aria-hidden="true">secure web apps</b><span class="caret" aria-hidden="true"></span></p>
+      <p class="lead">Web developer and UI designer who blends creativity, functionality and security. I research offensive security with team bi0s and build agentic AI systems.</p>
+      <div class="cta">
+        <a class="btn solid" href="/projects/">View projects</a>
+        <a class="btn" href="/writeups/">Read writeups</a>
+        <a class="btn ghost" href={SITE.resume} download>Resume</a>
+      </div>
+    </div>
+    <figure class="shot">
+      <div class="frame"><img src="/assets/profile.jpg" alt="Illustration of Anup working on a laptop at a CTF event" width="700" height="700" fetchpriority="high" /></div>
+      <figcaption class="cap mono">// think like an attacker, build like a defender</figcaption>
+    </figure>
+  </section>
+
+  <section class="wrap sec">
+    <div class="sh"><span class="ix">{ix()}</span><h2>whoami</h2></div>
+    <div class="split">
+      <div class="term" data-reveal>
+        <div class="term-b"><i></i><i></i><i></i></div>
+        <pre><span class="c">$</span> whoami
+anup: web developer, UI designer, security researcher
+<span class="c">$</span> cat team.txt
+bi0s, core member since Nov 2024
+<span class="c">$</span> ls focus/
+web-dev/  pentesting/  agentic-ai/
+<span class="c">$</span> echo $NOW
+building ASTRA, RAVEN and R3PORT<span class="caret"></span></pre>
+      </div>
+      <div class="stats">
+        {STATS.map((s) => <div class="stat" data-reveal><b data-count={s.n} data-suffix={s.suffix}>{s.n + s.suffix}</b><span>{s.label}</span></div>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap sec">
+    <div class="sh"><span class="ix">{ix()}</span><h2>What I do</h2></div>
+    <div class="trio">
+      <div class="box" data-reveal><h3>Web development and UI design</h3><p>Full-stack applications with React, Node.js and Flask, with interfaces I design myself.</p></div>
+      <div class="box" data-reveal><h3>Penetration testing</h3><p>Vulnerability assessment of web applications, APIs and cloud environments: authentication, authorization, injection, business logic and access control.</p></div>
+      <div class="box" data-reveal><h3>Agentic AI systems</h3><p>LLM orchestration combined with real backend engineering.</p></div>
+    </div>
+  </section>
+
+  <section class="wrap sec">
+    <div class="sh"><span class="ix">{ix()}</span><h2>Featured projects</h2><a class="more" href="/projects/">All projects</a></div>
+    <div class="list">{featured.map((p) => <ProjectCard p={p} short />)}</div>
+  </section>
+
+  {collections.length > 0 && (
+    <section class="wrap sec">
+      <div class="sh"><span class="ix">{ix()}</span><h2>From the writeups</h2><a class="more" href="/writeups/">All writeups</a></div>
+      <p class="mute lede">{writeups.length} pages in {writeups.filter((e) => !e.id.includes('/')).length} topics, mirrored from my Notion notes.</p>
+      <div class="list">
+        {collections.map(({ e, n }) => <a class="card" href={`/writeups/${e.id}/`} data-reveal><span class="cat">collection</span><h3>{e.data.title}</h3><div class="meta">{n} {n === 1 ? 'page' : 'pages'}</div></a>)}
+      </div>
+    </section>
+  )}
+
+  {posts.length > 0 && (
+    <section class="wrap sec">
+      <div class="sh"><span class="ix">{ix()}</span><h2>Latest from the blog</h2><a class="more" href="/blog/">All posts</a></div>
+      <div class="list">
+        {posts.map((p) => <a class="card" href={`/blog/${p.id}/`} data-reveal><span class="cat">post</span><h3>{p.data.title}</h3><p class="snip">{p.data.description}</p><div class="meta">{fmt(p.data.pubDate)}</div></a>)}
+      </div>
+    </section>
+  )}
+
+  {labs.length > 0 && (
+    <section class="wrap sec">
+      <div class="sh"><span class="ix">{ix()}</span><h2>Labs</h2><a class="more" href="/labs/">All labs</a></div>
+      <div class="list">
+        {labs.map((l) => <a class="card" href={`/labs/${l.id}/`} data-reveal><span class="cat">{l.data.difficulty}</span><h3>{l.data.title}</h3><p class="snip">{l.data.summary}</p><div class="meta">About {l.data.estimatedMinutes} min</div></a>)}
+      </div>
+    </section>
+  )}
+
+  <section class="wrap sec">
+    <div class="band" data-reveal>
+      <h2>Let&rsquo;s build something secure.</h2>
+      <p>Have a project, a team, or a CTF to play? I reply within a day.</p>
+      <div class="cta"><a class="btn solid" href="/contact/">Get in touch</a><a class="btn" href={`mailto:${SITE.email}`}>Email me</a></div>
+    </div>
+  </section>
+
+  <script>
+    import '../scripts/home.js';
+  </script>
+</Base>

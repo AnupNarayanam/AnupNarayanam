@@ -1,0 +1,59 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { published, fmt, tagSlug } from '../../lib/content.ts';
+import { SITE } from '../../data/profile.ts';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', published);
+  return posts.map((post) => ({ params: { id: post.id }, props: { post } }));
+}
+
+interface Props { post: CollectionEntry<'blog'> }
+const { post } = Astro.props;
+const { Content } = await render(post);
+const d = post.data;
+const minutes = Math.max(1, Math.round((post.body ?? '').split(/\s+/).length / 220));
+const inc = d.incident;
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: d.title,
+  description: d.description,
+  datePublished: d.pubDate.toISOString(),
+  dateModified: (d.updatedDate ?? d.pubDate).toISOString(),
+  author: { '@type': 'Person', name: SITE.name },
+};
+---
+<Base title={d.title} page="blog" ogType="article" description={d.description} greet="Sources are listed at the bottom of every post.">
+  <script slot="head" is:inline type="application/ld+json" set:html={JSON.stringify(ld)}></script>
+  <article class="wrap post">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/blog/">Blog</a><i>/</i><span>{d.title}</span></nav>
+    <h1 class="pt">{d.title}</h1>
+    <div class="byline">
+      <span>Published {fmt(d.pubDate)}</span>
+      {d.updatedDate && <span>Updated {fmt(d.updatedDate)}</span>}
+      <span>{minutes} min read</span>
+    </div>
+    {d.tags.length > 0 && <div class="tagrow">{d.tags.map((t) => <a class="tag" href={`/blog/tags/${tagSlug(t)}/`}>{t}</a>)}</div>}
+    {inc && (
+      <aside class="incident mt" aria-label="Incident summary">
+        <dl>
+          <dt>Incident</dt><dd>{inc.name}</dd>
+          {inc.date && <Fragment><dt>Date</dt><dd>{inc.date}</dd></Fragment>}
+          <dt>Status</dt><dd>{inc.status}</dd>
+          {inc.actor && <Fragment><dt>Actor</dt><dd>{inc.actor}</dd></Fragment>}
+          {inc.cves.length > 0 && <Fragment><dt>CVEs</dt><dd>{inc.cves.join(', ')}</dd></Fragment>}
+          {inc.sectors.length > 0 && <Fragment><dt>Sectors</dt><dd>{inc.sectors.join(', ')}</dd></Fragment>}
+          {inc.attackTechniques.length > 0 && <Fragment><dt>ATT&amp;CK</dt><dd>{inc.attackTechniques.join(', ')}</dd></Fragment>}
+        </dl>
+      </aside>
+    )}
+    <div class="prose mt"><Content /></div>
+    <section class="sources" aria-labelledby="sources-h">
+      <h2 id="sources-h">Sources</h2>
+      <ol>{d.sources.map((s) => <li><a href={s.url} target="_blank" rel="noopener noreferrer">{s.title}</a></li>)}</ol>
+    </section>
+    <nav class="pn2" aria-label="More"><a href="/blog/">All posts</a><a href="/rss.xml">RSS feed</a></nav>
+  </article>
+</Base>

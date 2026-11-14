@@ -1,0 +1,40 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { labPublished, DIFF_DOTS } from '../../lib/content.ts';
+
+const labs = (await getCollection('labs', labPublished)).sort((a, b) => (DIFF_DOTS[a.data.difficulty] ?? 0) - (DIFF_DOTS[b.data.difficulty] ?? 0));
+const levels = ['easy', 'medium', 'hard', 'insane'].filter((d) => labs.some((l) => l.data.difficulty === d));
+---
+<Base title="Labs" page="labs" description="Hands-on security labs built by Anup Narayanam. Each one runs on your own machine inside a locked-down container." greet="Labs run on your machine, inside a locked-down container." tips={['Never expose a lab to a network you do not control.']}>
+  <div class="wrap pgh">
+    <span class="ix">L</span>
+    <h1>Labs</h1>
+    <p>Hands-on security labs I build myself. Each one runs on your own machine inside a locked-down container, with progressive hints and a writeup you can open after you solve it.</p>
+  </div>
+  <section class="wrap sec" data-filter-root>
+    {labs.length > 0 ? (
+      <Fragment>
+        <div class="chips" role="group" aria-label="Filter labs by difficulty">
+          <button class="chip" type="button" data-filter="all" aria-pressed="true">All<small>{labs.length}</small></button>
+          {levels.map((d) => <button class="chip" type="button" data-filter={d} aria-pressed="false">{d}<small>{labs.filter((l) => l.data.difficulty === d).length}</small></button>)}
+        </div>
+        <div class="list mt">
+          {labs.map((l) => (
+            <a class="card" href={`/labs/${l.id}/`} data-item data-kind={l.data.difficulty}>
+              <span class="cat">{l.data.difficulty}</span>
+              <h2>{l.data.title}</h2>
+              <p class="snip">{l.data.summary}</p>
+              <div class="meta">{l.data.category}, about {l.data.estimatedMinutes} min{l.data.status === 'beta' ? ', beta' : ''}</div>
+            </a>
+          ))}
+        </div>
+      </Fragment>
+    ) : (
+      <div class="note">The first lab is being built. Every lab will run on your own machine with Docker, locked down by default, so nothing vulnerable ever touches this site.</div>
+    )}
+  </section>
+  <script>
+    import '../../scripts/filter.js';
+  </script>
+</Base>

@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { PROJECTS, KINDS } from '../data/profile.ts';
+const count = (k: string) => (k === 'all' ? PROJECTS.length : PROJECTS.filter((p) => p.kind === k).length);
+---
+<Base title="Projects" page="projects" description="AI systems, security platforms and web projects by Anup Narayanam: ASTRA, RAVEN, R3PORT and this site." greet="Try the filters. Everything is still being built." tips={['ASTRA, RAVEN and R3PORT are all in progress.']}>
+  <div class="wrap pgh"><span class="ix">P</span><h1>Projects</h1><p>Three systems in active development, plus the site you are on.</p></div>
+  <section class="wrap sec" data-filter-root>
+    <div class="chips" role="group" aria-label="Filter projects">
+      {KINDS.map(([k, label]) => <button class="chip" type="button" data-filter={k} aria-pressed={k === 'all' ? 'true' : 'false'}>{label}<small>{count(k)}</small></button>)}
+    </div>
+    <div class="list mt">{PROJECTS.map((p) => <ProjectCard p={p} />)}</div>
+  </section>
+  <section class="wrap sec">
+    <div class="band" data-reveal>
+      <h2>Looking for hands-on security work?</h2>
+      <p>My CTF and pentest writeups show how I actually work.</p>
+      <div class="cta"><a class="btn solid" href="/writeups/">Read the writeups</a></div>
+    </div>
+  </section>
+  <script>
+    import '../scripts/filter.js';
+  </script>
+</Base>

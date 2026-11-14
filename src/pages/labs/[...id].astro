@@ -1,0 +1,67 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { labPublished, DIFF_DOTS } from '../../lib/content.ts';
+
+export async function getStaticPaths() {
+  const labs = await getCollection('labs', labPublished);
+  return labs.map((lab) => ({ params: { id: lab.id }, props: { lab } }));
+}
+
+interface Props { lab: CollectionEntry<'labs'> }
+const { lab } = Astro.props;
+const d = lab.data;
+const { Content } = await render(lab);
+const dots = '\u25CF'.repeat(DIFF_DOTS[d.difficulty] ?? 1) + '\u25CB'.repeat(4 - (DIFF_DOTS[d.difficulty] ?? 1));
+const dir = d.path ?? lab.id;
+const hasBody = Boolean(lab.body && lab.body.trim());
+---
+<Base title={d.title} page="labs" ogType="article" description={d.summary} greet="Start with the objectives, and open hints one at a time.">
+  <article class="wrap post">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/labs/">Labs</a><i>/</i><span>{d.title}</span></nav>
+    <h1 class="pt">{d.title}</h1>
+    <div class="byline">
+      <span><span class="diff" aria-hidden="true">{dots}</span> {d.difficulty}</span>
+      <span>{d.category}</span>
+      <span>About {d.estimatedMinutes} min</span>
+      <span>Version {d.version}{d.status === 'beta' ? ' (beta)' : ''}</span>
+    </div>
+    <p class="lead mute">{d.summary}</p>
+    {d.skills.length > 0 && <div class="tagrow">{d.skills.map((s) => <span class="tag">{s}</span>)}</div>}
+
+    {d.objectives.length > 0 && (
+      <section class="box mt" data-reveal>
+        <h3>Objectives</h3>
+        <ul class="bul">{d.objectives.map((o) => <li>{o}</li>)}</ul>
+        <p class="mono mute">Flag format: {d.flagFormat}</p>
+      </section>
+    )}
+
+    <section class="box mt" data-reveal>
+      <h3>Run it on your machine</h3>
+      <p>This lab is deliberately vulnerable. It runs in a locked-down container with no extra privileges. Run it only on a machine you control, and never expose it to a network you do not trust.</p>
+      {d.repo ? (
+        <pre class="term" style="padding:14px 18px;margin:12px 0 0;overflow-x:auto"><code>git clone {d.repo}
+cd {dir}
+docker compose up -d</code></pre>
+      ) : <p class="mute">The repository link will be added when the lab is released.</p>}
+    </section>
+
+    {hasBody && <div class="prose mt"><Content /></div>}
+
+    {d.hints.length > 0 && (
+      <section class="mt">
+        <h2 class="mt" style="font:600 20px Inter,sans-serif">Hints</h2>
+        {d.hints.map((h, i) => <details class="hint"><summary>Hint {i + 1}</summary><p>{h}</p></details>)}
+      </section>
+    )}
+
+    {d.writeup && (
+      <details class="hint mt">
+        <summary>After you solve it</summary>
+        <p>Open the full solution: <a href={`/writeups/${d.writeup.id}/`}>read the writeup</a>.</p>
+      </details>
+    )}
+    <nav class="pn2" aria-label="More"><a href="/labs/">All labs</a></nav>
+  </article>
+</Base>

@@ -1,0 +1,32 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { published, byDateDesc, fmt, tagSlug } from '../../lib/content.ts';
+
+const posts = (await getCollection('blog', published)).sort(byDateDesc);
+const tags = [...new Map(posts.flatMap((p) => p.data.tags).map((t) => [tagSlug(t), t])).entries()].sort((a, b) => a[0].localeCompare(b[0]));
+---
+<Base title="Blog" page="blog" description="Plain-language write-ups of recent cyberattacks and security news: what happened, how it worked, and how to defend against it." greet="Recent attacks, explained. Every post cites its sources." tips={['Subscribe with the RSS link in the footer.']}>
+  <div class="wrap pgh">
+    <span class="ix">B</span>
+    <h1>Blog</h1>
+    <p>Plain-language write-ups of recent cyberattacks and security news: what happened, how it worked, and how to defend against it. Every post cites its sources.</p>
+  </div>
+  <section class="wrap sec">
+    {tags.length > 0 && <div class="chips">{tags.map(([slug, label]) => <a class="chip" href={`/blog/tags/${slug}/`}>{label}</a>)}</div>}
+    {posts.length > 0 ? (
+      <div class="list mt">
+        {posts.map((p) => (
+          <a class="card" href={`/blog/${p.id}/`}>
+            <span class="cat">{p.data.incident ? 'incident' : 'post'}</span>
+            <h2>{p.data.title}</h2>
+            <p class="snip">{p.data.description}</p>
+            <div class="meta">{fmt(p.data.pubDate)}</div>
+          </a>
+        ))}
+      </div>
+    ) : (
+      <div class="note mt">The first post is on its way. Subscribe to the <a href="/rss.xml">RSS feed</a> to get it as soon as it lands.</div>
+    )}
+  </section>
+</Base>

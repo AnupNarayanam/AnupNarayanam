@@ -1,0 +1,34 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { byOrder } from '../../lib/content.ts';
+import synced from '../../data/synced.json';
+
+const all = await getCollection('writeups');
+const top = all.filter((e) => !e.id.includes('/')).sort(byOrder);
+const count = (id: string) => all.filter((x) => x.id.startsWith(id + '/')).length;
+const when = synced.at ? new Date(synced.at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : null;
+---
+<Base title="Writeups" page="writeups" description="CTF, wargame and pentest writeups by Anup Narayanam, organised into collections: OverTheWire, PortSwigger, PicoCTF and more." greet="Pick a collection. Every page is a real writeup." tips={['Press Ctrl K to search every page.', 'Scroll to the end of a writeup for a flag.']}>
+  <div class="wrap pgh">
+    <span class="ix">W</span>
+    <h1>Writeups</h1>
+    <p>{all.length} pages in {top.length} topics: challenges, CTFs, labs and study notes, organised the way I keep them in Notion.{when && ` Last synced ${when}.`}</p>
+  </div>
+  <section class="wrap sec">
+    {top.length > 0 ? (
+      <div class="list">
+        {top.map((e) => {
+          const n = count(e.id);
+          return <a class="card" href={`/writeups/${e.id}/`}><span class="cat">{n > 0 ? 'collection' : 'writeup'}</span><h2>{e.data.title}</h2><div class="meta">{n > 0 ? `${n} ${n === 1 ? 'page' : 'pages'}` : 'Read writeup'}</div></a>;
+        })}
+      </div>
+    ) : (
+      <div class="note">No writeups yet. Run <code>npm run sync</code> to pull them from Notion.</div>
+    )}
+  </section>
+  <script is:inline>
+    // links from the old hash-based site (#/collection/page) keep working
+    if (location.hash.startsWith('#/')) location.replace('/writeups/' + location.hash.slice(2).replace(/\/?$/, '/'));
+  </script>
+</Base>

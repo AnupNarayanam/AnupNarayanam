@@ -1,0 +1,23 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { published, byDateDesc, fmt, tagSlug } from '../../../lib/content.ts';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', published);
+  const tags = new Map(posts.flatMap((p) => p.data.tags).map((t) => [tagSlug(t), t]));
+  return [...tags.entries()].map(([slug, label]) => ({
+    params: { tag: slug },
+    props: { label, posts: posts.filter((p) => p.data.tags.some((t) => tagSlug(t) === slug)).sort(byDateDesc) },
+  }));
+}
+const { label, posts } = Astro.props;
+---
+<Base title={`Posts tagged ${label}`} page="blog" indexable={false} description={`Blog posts tagged ${label}.`}>
+  <div class="wrap pgh"><span class="ix">#</span><h1>{label}</h1><p>{posts.length} {posts.length === 1 ? 'post' : 'posts'} tagged {label}. <a href="/blog/">All posts</a></p></div>
+  <section class="wrap sec">
+    <div class="list">
+      {posts.map((p) => <a class="card" href={`/blog/${p.id}/`}><span class="cat">{p.data.incident ? 'incident' : 'post'}</span><h2>{p.data.title}</h2><p class="snip">{p.data.description}</p><div class="meta">{fmt(p.data.pubDate)}</div></a>)}
+    </div>
+  </section>
+</Base>
