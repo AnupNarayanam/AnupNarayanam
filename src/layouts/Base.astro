@@ -62,5 +62,9 @@ const image = new URL('/assets/profile.jpg', Astro.site).href;
     <script>
       import '../scripts/shell.js';
     </script>
+    <script>
+      import { injectSpeedInsights } from '@vercel/speed-insights';
+      injectSpeedInsights();
+    </script>
   </body>
 </html>
