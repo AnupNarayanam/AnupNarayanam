@@ -1,8 +1,13 @@
 # Anup Narayanam
 
-Web developer, UI designer and security researcher. Core member of team bi0s.
+**AI Engineer | Security Researcher | Core Member, Team bi0s**
 
-This repository is the source of my personal site: portfolio, CTF writeups, and a security blog. It is built with Astro and deployed on Vercel.
+Building intelligent systems, researching security vulnerabilities, and exploring the intersection of Artificial Intelligence and Cybersecurity.
 
-- Run it locally and deploy it: see [docs/DEVELOPING.md](docs/DEVELOPING.md)
-- Writeups are synced from Notion; blog posts live in `src/content/blog/`
+This repository is the source of my personal website, featuring my projects, technical research, CTF writeups, and security blog.
+
+- Built with Astro and deployed on Vercel.
+- CTF writeups are synced from Notion.
+- Security research and blog posts live in `src/content/blog/`.
+
+For local development and deployment, see [docs/DEVELOPING.md](docs/DEVELOPING.md).
